@@ -1,9 +1,10 @@
 <% layout('styles/boilerplate') %>
-<div id="cluster-map"></div>
+<div class='container-fluid' id="cluster-map"></div>
     <div class='mb-3'>
     </div>
     <% for(let c of Camp){ %>
-        <div class="card mb-3">
+        <div class="container">
+        <div class=" card mb-3">
             <div class="row">
                 <div class="col-md-4">
                     <%if(c.images.length) {%>
@@ -31,6 +32,7 @@
                 </div>
             </div>
         </div>
+    </div>
         <% } %>
 
         <script>
