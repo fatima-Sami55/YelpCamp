@@ -44,7 +44,7 @@ const allDelete = async () => {
                 {
 
 
-                    url: 'https://res.cloudinary.com/dvm6ebpga/image/upload/v1621241544/YelpCamp/fbc5icxojuzzpv7dm8yb.jpg',
+                    url: 'https://res.cloudinary.com/dvm6ebpga/image/upload/v1621255657/YelpCamp/enppbucu1rlholo2v4lq.jpg',
                     filename: 'YelpCamp/fbc5icxojuzzpv7dm8yb'
                 }
             ],
