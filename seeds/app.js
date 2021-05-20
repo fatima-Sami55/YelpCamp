@@ -36,7 +36,7 @@ const allDelete = async () => {
                 },
             images: [
                 {
-                    url: 'https://res.cloudinary.com/douqbebwk/image/upload/v1600060601/YelpCamp/ahfnenvca4tha00h2ubt.png',
+                    url: 'https://res.cloudinary.com/dvm6ebpga/image/upload/v1621511779/YelpCamp/lb0lyup0wtdoy47mvsnk.jpg',
                     filename: 'YelpCamp/ahfnenvca4tha00h2ubt'
 
 
@@ -44,7 +44,7 @@ const allDelete = async () => {
                 {
 
 
-                    url: 'https://res.cloudinary.com/dvm6ebpga/image/upload/v1621255657/YelpCamp/enppbucu1rlholo2v4lq.jpg',
+                    url: 'https://res.cloudinary.com/dvm6ebpga/image/upload/v1621511639/YelpCamp/itzzxpqusafoc5ktrdmw.jpg',
                     filename: 'YelpCamp/fbc5icxojuzzpv7dm8yb'
                 }
             ],
