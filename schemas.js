@@ -29,7 +29,7 @@ module.exports.campSchema = joi.object({
         location: joi.string().required().escapeHTML(),
         // img: joi.string().required(),
         price: joi.number().required().min(0),
-        description: joi.string().required().escapeHTML(),
+        description: joi.string().required().escapeHTML().min(0).max(20),
     }).required(),
     deleteImages: joi.array()
 });
