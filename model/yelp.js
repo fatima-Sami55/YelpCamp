@@ -47,7 +47,7 @@ const yelpSchema = new Schema({
 yelpSchema.virtual('properties.popUpMarkup').get(function () {
        return `
        <strong><a href='/campGround/${this._id}'>${this.title}</a></strong>
-       <p>${this.description.substring(0,35)}.............</p>`;
+       <p>${this.description.substring(0,25)}</p>`;
 })
 
 yelpSchema.post('findOneAndDelete', async function (lastDeleted) {
