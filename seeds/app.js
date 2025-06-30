@@ -1,9 +1,10 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const model = require('../model/yelp')
 const cities = require('./cities');
 const { places, descriptors } = require('./seedHelpers');
 
-mongoose.connect('mongodb://localhost:27017/yelpdb', {
+mongoose.connect(process.env.DB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
@@ -18,11 +19,11 @@ const sample = array => array[Math.floor(Math.random() * array.length)];
 
 const allDelete = async () => {
     await model.deleteMany({});
-    for (let i = 0; i <= 200; i++) {
+    for (let i = 0; i <= 10; i++) {
         const rand1000 = Math.floor(Math.random() * 1000);
         const price = Math.floor(Math.random() * 10) + 20;
         const newCamp = new model({
-            author: '60a0f0a1fe61eb1f188f7ca2',
+            author: '686289dcc880365844337e25',
             location: `${cities[rand1000].city} - ${cities[rand1000].state}`,
             title: `${sample(descriptors)} ${sample(places)}`,
             description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis sunt cum, amet nam odit optio harum eveniet saepe non, eligendi modi porro ducimus, animi iure quidem voluptate ipsum. Quae, voluptates.',
