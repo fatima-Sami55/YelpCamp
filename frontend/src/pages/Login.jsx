@@ -17,14 +17,22 @@ export default function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    const username = formData.username.trim();
+    const password = formData.password;
+
+    if (!username || !password) {
+      setError("Username and password are required");
+      return;
+    }
+
     setLoading(true);
     setError("");
 
     try {
-      await login(formData.username, formData.password);
+      await login(username, password);
       navigate("/campgrounds");
     } catch (err) {
-      setError(err.response?.data?.error || err.response?.data?.message || "Login failed");
+      setError(err.response?.data?.error || err.response?.data?.message || err.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -54,6 +62,8 @@ export default function Login() {
                     name="username"
                     value={formData.username}
                     onChange={handleChange}
+                    minLength="3"
+                    maxLength="30"
                     autoFocus
                     required
                   />
@@ -68,6 +78,7 @@ export default function Login() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
+                    minLength="1"
                     required
                   />
                 </div>

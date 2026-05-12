@@ -6,7 +6,7 @@ YelpCamp is a MERN campground review application. Users can register, log in, br
 
 - Frontend: React, Vite, React Router, Axios, Bootstrap, Mapbox GL JS
 - Backend: Node.js, Express, MongoDB, Mongoose
-- Authentication: Passport, passport-local-mongoose, express-session
+- Authentication: Passport local strategy for password checks, JWT bearer tokens for API auth
 - Uploads: Multer, Cloudinary
 - Security: Helmet, express-mongo-sanitize, Joi validation
 
@@ -14,7 +14,7 @@ YelpCamp is a MERN campground review application. Users can register, log in, br
 
 ```text
 yelpCamp/
-  backend/      Express API, MongoDB models, auth, uploads, Mapbox token endpoint
+  backend/      Express API, MongoDB models, JWT auth, uploads, Mapbox token endpoint
   frontend/     React/Vite client
   README.md     Project setup and usage guide
 ```
@@ -36,9 +36,11 @@ CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
 CLOUDINARY_KEY=your_cloudinary_api_key
 CLOUDINARY_SECRET=your_cloudinary_api_secret
 DB_URL=mongodb://localhost:27017/yelpdb
-SECRET=your_session_secret
+JWT_SECRET=your_jwt_secret
 MAPBOX_TOKEN=your_mapbox_access_token
 ```
+
+`SECRET` is also accepted as a fallback for JWT signing, but `JWT_SECRET` is recommended.
 
 Optional frontend override:
 
@@ -109,6 +111,8 @@ Frontend:
 - `/` - home page
 - `/campgrounds` - campground index with cluster map
 - `/campgrounds/:id` - campground details with location map and reviews
+- `/campgrounds/new` - create campground
+- `/campgrounds/:id/edit` - update campground
 - `/login` - login
 - `/register` - register
 
@@ -117,7 +121,6 @@ Backend:
 - `GET /currentUser`
 - `POST /register`
 - `POST /login`
-- `GET /logout`
 - `GET /mapbox-token`
 - `GET /campGround`
 - `GET /campGround/:id`
@@ -127,9 +130,17 @@ Backend:
 - `POST /campGround/:id/reviews`
 - `DELETE /campGround/:id/reviews/:reviewId`
 
+Protected backend routes require:
+
+```http
+Authorization: Bearer <jwt-token>
+```
+
 ## Notes
 
-- The frontend uses cookies for session auth, so the backend CORS configuration allows credentials from `http://localhost:5173`.
+- Login and registration return a JWT. The frontend stores it in `localStorage` as `yelpCampToken` and Axios sends it on protected API requests.
+- Logout is client-side token clearing.
 - Mapbox is loaded in the frontend, but the token is served from the backend through `/mapbox-token`.
+- Updating a campground location geocodes the new location and updates the saved map geometry.
 - Image uploads require valid Cloudinary credentials.
 - Keep `.env`, `node_modules`, and build outputs out of git.

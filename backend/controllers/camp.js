@@ -4,22 +4,28 @@ const mapBoxToken = process.env.MAPBOX_TOKEN;
 const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 const {cloudinary} = require('../cloudinary/app')
 
+async function getGeometry(location) {
+    const geoData = await geocoder.forwardGeocode({
+        query: location,
+        limit: 1
+    }).send()
+
+    return geoData.body.features[0]?.geometry;
+}
+
 module.exports.index = async (req, res) => {
     const Camp = await model.find({});
     res.json({ campgrounds: Camp })
 }
 
-module.exports.newForm = (req, res) => {
-    res.json({})
-}
-
 module.exports.createCamp = async (req, res) => {
-    const geoData = await geocoder.forwardGeocode({
-        query: req.body.campground.location,
-        limit: 1
-    }).send()
+    const geometry = await getGeometry(req.body.campground.location);
+    if (!geometry) {
+        return res.status(400).json({ error: 'Could not find that location' });
+    }
+
     const camp = new model(req.body.campground);
-    camp.geometry = geoData.body.features[0].geometry;
+    camp.geometry = geometry;
     camp.images = req.files.map(f =>({url:f.path, filename:f.filename}));
     camp.author = req.user._id;
     await camp.save()
@@ -39,18 +45,23 @@ module.exports.showCamp = async (req, res) => {
     res.json({ campground: camp })
 }
 
-module.exports.edit = async (req, res) => {
-    const {id} = req.params
-    const camp = await model.findById(id)
-    if (!camp) {
-        return res.status(404).json({ error: 'Cannot find that campground!' })
-    }
-    res.json({ campground: camp })
-}
-
 module.exports.Update = async (req, res) => {
     const {id} = req.params
-    const camp = await model.findByIdAndUpdate(id, { ...req.body.campground });
+    const camp = await model.findById(id);
+    if (!camp) {
+        return res.status(404).json({ error: 'Cannot find that campground!' });
+    }
+
+    camp.set(req.body.campground);
+
+    if (req.body.campground.location) {
+        const geometry = await getGeometry(req.body.campground.location);
+        if (!geometry) {
+            return res.status(400).json({ error: 'Could not find that location' });
+        }
+        camp.geometry = geometry;
+    }
+
     const imgs = req.files.map(f =>({url:f.path, filename:f.filename}));
     camp.images.push(...imgs);
     await camp.save()

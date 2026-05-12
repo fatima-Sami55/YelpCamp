@@ -1,5 +1,7 @@
+/* eslint-disable react-refresh/only-export-components */
+/* eslint-disable react-hooks/set-state-in-effect */
 import { createContext, useState, useContext, useEffect } from 'react';
-import { authAPI } from '../services/api';
+import { authAPI, tokenStorage } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -7,35 +9,59 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  async function checkAuth() {
+    if (!tokenStorage.get()) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await authAPI.getCurrentUser();
+      if (response.data.user) {
+        setUser(response.data.user);
+      } else {
+        tokenStorage.clear();
+        setUser(null);
+      }
+    } catch {
+      tokenStorage.clear();
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     // Check if user is logged in on mount
     checkAuth();
   }, []);
 
-  const checkAuth = async () => {
-    try {
-      const response = await authAPI.getCurrentUser();
-      setUser(response.data.user);
-    } catch {
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const login = async (username, password) => {
+    tokenStorage.clear();
+    setUser(null);
     const response = await authAPI.login({ username, password });
+    if (!response.data?.token || !response.data?.user) {
+      throw new Error("Invalid login response");
+    }
+    tokenStorage.set(response.data.token);
     setUser(response.data.user);
     return response.data;
   };
 
   const logout = async () => {
-    await authAPI.logout();
+    tokenStorage.clear();
     setUser(null);
   };
 
   const register = async (userData) => {
+    tokenStorage.clear();
+    setUser(null);
     const response = await authAPI.register(userData);
+    if (!response.data?.token || !response.data?.user) {
+      throw new Error("Invalid registration response");
+    }
+    tokenStorage.set(response.data.token);
     setUser(response.data.user);
     return response.data;
   };

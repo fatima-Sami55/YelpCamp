@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import CampgroundMap from "../components/CampgroundMap";
 import { useAuth } from "../context/AuthContext";
@@ -19,11 +20,7 @@ export default function CampgroundDetail() {
     body: "",
   });
 
-  useEffect(() => {
-    fetchCampground();
-  }, [id]);
-
-  async function fetchCampground() {
+  const fetchCampground = useCallback(async () => {
     try {
       const response = await campAPI.getById(id);
       const campground = response.data.campground;
@@ -34,7 +31,11 @@ export default function CampgroundDetail() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [id]);
+
+  useEffect(() => {
+    fetchCampground();
+  }, [fetchCampground]);
 
   async function handleReviewSubmit(e) {
     e.preventDefault();

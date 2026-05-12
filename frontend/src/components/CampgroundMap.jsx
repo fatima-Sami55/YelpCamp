@@ -3,6 +3,8 @@ import { configAPI } from "../services/api";
 
 export default function CampgroundMap({ campground }) {
   const mapRef = useRef(null);
+  const markerRef = useRef(null);
+  const popupRef = useRef(null);
   const containerRef = useRef(null);
   const [mapToken, setMapToken] = useState("");
 
@@ -24,6 +26,15 @@ export default function CampgroundMap({ campground }) {
     const coordinates = campground?.geometry?.coordinates;
     if (!mapToken || !window.mapboxgl || !containerRef.current || !coordinates) return;
 
+    const popupHtml = `<h3>${campground.title}</h3><p>${campground.location}</p>`;
+
+    if (mapRef.current && markerRef.current && popupRef.current) {
+      mapRef.current.setCenter(coordinates);
+      markerRef.current.setLngLat(coordinates);
+      popupRef.current.setHTML(popupHtml);
+      return;
+    }
+
     window.mapboxgl.accessToken = mapToken;
     const map = new window.mapboxgl.Map({
       container: containerRef.current,
@@ -35,19 +46,27 @@ export default function CampgroundMap({ campground }) {
     mapRef.current = map;
     map.addControl(new window.mapboxgl.NavigationControl(), "bottom-right");
 
-    new window.mapboxgl.Marker()
+    const popup = new window.mapboxgl.Popup({ offset: 25 }).setHTML(popupHtml);
+    const marker = new window.mapboxgl.Marker()
       .setLngLat(coordinates)
-      .setPopup(
-        new window.mapboxgl.Popup({ offset: 25 })
-          .setHTML(`<h3>${campground.title}</h3><p>${campground.location}</p>`)
-      )
+      .setPopup(popup)
       .addTo(map);
+
+    markerRef.current = marker;
+    popupRef.current = popup;
 
     return () => {
       map.remove();
       mapRef.current = null;
+      markerRef.current = null;
+      popupRef.current = null;
     };
-  }, [campground, mapToken]);
+  }, [
+    campground?.geometry?.coordinates,
+    campground?.location,
+    campground?.title,
+    mapToken,
+  ]);
 
   return <div id="map" ref={containerRef} />;
 }

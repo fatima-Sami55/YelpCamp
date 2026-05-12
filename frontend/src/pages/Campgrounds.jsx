@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import CampgroundClusterMap from "../components/CampgroundClusterMap";
@@ -11,10 +12,6 @@ export default function Campgrounds() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    fetchCampgrounds();
-  }, []);
-
   async function fetchCampgrounds() {
     try {
       const response = await campAPI.getAll();
@@ -25,6 +22,10 @@ export default function Campgrounds() {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    fetchCampgrounds();
+  }, []);
 
   if (loading) return <div className="container py-5 text-center">Loading...</div>;
   if (error) {

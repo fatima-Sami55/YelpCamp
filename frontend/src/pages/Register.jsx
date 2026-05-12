@@ -22,8 +22,27 @@ export default function Register() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    const username = formData.username.trim();
+    const email = formData.email.trim();
+    const password = formData.password;
+    const confirmPassword = formData.confirmPassword;
 
-    if (formData.password !== formData.confirmPassword) {
+    if (username.length < 3) {
+      setError("Username must be at least 3 characters");
+      return;
+    }
+
+    if (!email) {
+      setError("Email is required");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
+
+    if (password !== confirmPassword) {
       setError("Passwords do not match");
       return;
     }
@@ -33,9 +52,9 @@ export default function Register() {
 
     try {
       await register({
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
+        username,
+        email,
+        password,
       });
       navigate("/campgrounds");
     } catch (err) {
@@ -69,6 +88,8 @@ export default function Register() {
                     name="username"
                     value={formData.username}
                     onChange={handleChange}
+                    minLength="3"
+                    maxLength="30"
                     autoFocus
                     required
                   />
@@ -83,6 +104,7 @@ export default function Register() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
+                    maxLength="120"
                     required
                   />
                 </div>
@@ -96,6 +118,7 @@ export default function Register() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
+                    minLength="6"
                     required
                   />
                 </div>
@@ -109,6 +132,7 @@ export default function Register() {
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
+                    minLength="6"
                     required
                   />
                 </div>

@@ -5,16 +5,20 @@ const router = express.Router();
 
 const wrapError = require('../helpers/errorWraper');
 
-router.get('/register', controllers.renderRegister);
-
 router.post('/register', wrapError(controllers.Register));
 
-router.get('/login', controllers.renderLogin);
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', { session: false }, (err, user, info) => {
+        if (err) return next(err);
+        if (!user) {
+            return res.status(401).json({ error: info?.message || 'Invalid username or password' });
+        }
 
-router.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), controllers.login);
+        req.user = user;
+        next();
+    })(req, res, next);
+}, controllers.login);
 
 router.get('/currentUser', controllers.currentUser);
-
-router.get('/logout', controllers.logout)
 
 module.exports = router;

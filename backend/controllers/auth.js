@@ -1,41 +1,42 @@
 const User = require('../model/users');
+const { signToken } = require('../helpers/jwt');
 
-module.exports.renderRegister = (req, res) => {
-    res.json({})
-}
+const authResponse = (user, message) => ({
+    user,
+    token: signToken({ id: user._id, username: user.username }),
+    message
+});
 
 module.exports.Register = async (req, res, next) => {
     try {
-        
-        const { username, password, email } = req.body;
+        const username = req.body.username?.trim();
+        const email = req.body.email?.trim();
+        const { password } = req.body;
+
+        if (!username || username.length < 3 || username.length > 30) {
+            return res.status(400).json({ error: 'Username must be between 3 and 30 characters' });
+        }
+
+        if (!email || email.length > 120 || !/^\S+@\S+\.\S+$/.test(email)) {
+            return res.status(400).json({ error: 'Valid email is required' });
+        }
+
+        if (!password || password.length < 6) {
+            return res.status(400).json({ error: 'Password must be at least 6 characters' });
+        }
+
         const user = new User({ email, username });
         const registerd = await User.register(user, password);
-        req.login(registerd, err => {
-            if (err) return next(err);
-            res.json({ user: registerd, message: "Welcome to YelpCamp!" })
-        })
+        res.json(authResponse(registerd, "Welcome to YelpCamp!"))
     } catch (e) {
         res.status(400).json({ error: e.message });
     }
 }
 
-module.exports.renderLogin = (req, res) => {
-    res.json({})
-}
-
 module.exports.login = (req, res) => {
-    const redirectUrl = req.session.returnTo || '/campGround';
-    delete req.session.returnTo;
-    res.json({ user: req.user, message: 'Welcome back!' });
+    res.json(authResponse(req.user, 'Welcome back!'));
 }
 
 module.exports.currentUser = (req, res) => {
     res.json({ user: req.user || null });
-}
-
-module.exports.logout = (req, res, next) => {
-    req.logout((err) => {
-        if (err) return next(err);
-        res.json({ message: 'Successfully Logged Out!' })
-    });
 }

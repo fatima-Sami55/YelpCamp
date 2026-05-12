@@ -12,6 +12,11 @@ dist/
 build/
 dist-ssr/
 
+# Archives
+*.zip
+*.tar
+*.tar.gz
+
 # Logs
 logs/
 *.log

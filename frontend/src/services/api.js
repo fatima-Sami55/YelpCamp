@@ -7,11 +7,13 @@ const API_URL =
 // Axios Instance
 const api = axios.create({
   baseURL: API_URL,
-  withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
+
+export const tokenStorage = {
+  get: () => localStorage.getItem("yelpCampToken"),
+  set: (token) => localStorage.setItem("yelpCampToken", token),
+  clear: () => localStorage.removeItem("yelpCampToken"),
+};
 
 // ==============================
 // AUTH APIs
@@ -25,10 +27,6 @@ export const authAPI = {
   // Login User
   login: (credentials) =>
     api.post("/login", credentials),
-
-  // Logout User
-  logout: () =>
-    api.get("/logout"),
 
   // Current Logged In User
   getCurrentUser: () =>
@@ -101,9 +99,22 @@ export const reviewAPI = {
 // AXIOS RESPONSE INTERCEPTOR
 // ==============================
 
+api.interceptors.request.use((config) => {
+  const token = tokenStorage.get();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 api.interceptors.response.use(
   (response) => response,
-  (error) => Promise.reject(error)
+  (error) => {
+    if (error.response?.status === 401) {
+      tokenStorage.clear();
+    }
+    return Promise.reject(error);
+  }
 );
 
 export default api;

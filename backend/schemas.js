@@ -25,13 +25,13 @@ const joi = BaseJoi.extend(extension);
 
 module.exports.campSchema = joi.object({
     campground: joi.object({
-        title: joi.string().required().escapeHTML(),
-        location: joi.string().required().escapeHTML(),
+        title: joi.string().trim().min(3).max(80).required().escapeHTML(),
+        location: joi.string().trim().max(120).required().escapeHTML(),
         // img: joi.string().required(),
         price: joi.number().required().min(0),
-        description: joi.string().required().escapeHTML().min(0).max(20),
+        description: joi.string().trim().required().escapeHTML().min(1).max(60),
     }).required(),
-    deleteImages: joi.array()
+    deleteImages: joi.array().items(joi.string().required())
 });
 
 

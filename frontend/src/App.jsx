@@ -7,6 +7,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Campgrounds from "./pages/Campgrounds";
 import CampgroundDetail from "./pages/CampgroundDetail";
+import NewCampground from "./pages/NewCampground";
+import EditCampground from "./pages/EditCampground";
 
 import "./App.css";
 
@@ -40,7 +42,7 @@ function AppContent() {
           path="/campgrounds/new"
           element={
             <ProtectedRoute>
-              <div>New Campground Form Coming Soon</div>
+              <NewCampground />
             </ProtectedRoute>
           }
         />
@@ -49,7 +51,7 @@ function AppContent() {
           path="/campgrounds/:id/edit"
           element={
             <ProtectedRoute>
-              <div>Edit Campground Form Coming Soon</div>
+              <EditCampground />
             </ProtectedRoute>
           }
         />
