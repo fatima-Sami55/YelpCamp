@@ -38,9 +38,11 @@ CLOUDINARY_SECRET=your_cloudinary_api_secret
 DB_URL=mongodb://localhost:27017/yelpdb
 JWT_SECRET=your_jwt_secret
 MAPBOX_TOKEN=your_mapbox_access_token
+FRONTEND_URLS=http://localhost:5173,https://yelpcamp-ashy-two.vercel.app
 ```
 
 `SECRET` is also accepted as a fallback for JWT signing, but `JWT_SECRET` is recommended.
+`FRONTEND_URLS` is a comma-separated CORS allowlist. Vercel URLs ending in `.vercel.app` are also allowed.
 
 Optional frontend override:
 
@@ -97,7 +99,7 @@ Backend on Render:
 - Set the root directory to `backend` if deploying from this monorepo.
 - Build command: `npm install`
 - Start command: `npm start`
-- Required environment variables: `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_KEY`, `CLOUDINARY_SECRET`, `DB_URL`, `JWT_SECRET`, `MAPBOX_TOKEN`
+- Required environment variables: `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_KEY`, `CLOUDINARY_SECRET`, `DB_URL`, `JWT_SECRET`, `MAPBOX_TOKEN`, `FRONTEND_URLS`
 
 Frontend on Vercel:
 

@@ -34,6 +34,25 @@ const camps = require('./routes/camps');
 const reviews = require('./routes/reviews');
 const { attachUserFromToken } = require('./middle');
 
+const allowedOrigins = [
+    'http://localhost:5173',
+    'https://yelpcamp-ashy-two.vercel.app',
+    ...(process.env.FRONTEND_URLS || '')
+        .split(',')
+        .map(origin => origin.trim())
+        .filter(Boolean)
+];
+
+const corsOptions = {
+    origin(origin, callback) {
+        if (!origin || allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin)) {
+            return callback(null, true);
+        }
+
+        return callback(new Error('Not allowed by CORS'));
+    }
+};
+
 mongoose.connect(dbUrl)
     .then(() => {
         console.log('Database connected!')
@@ -44,7 +63,7 @@ mongoose.connect(dbUrl)
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors(corsOptions));
 app.use(sanitizeRequest);
 app.use(helmet());
 
