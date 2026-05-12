@@ -1,8 +1,14 @@
 import axios from "axios";
 
-// Backend Base URL
-const API_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:3000";
+const DEFAULT_API_URL = import.meta.env.PROD
+  ? "https://yelpcamp-llkg.onrender.com"
+  : "http://localhost:3000";
+
+const ENV_API_URL = import.meta.env.PROD
+  ? import.meta.env.VITE_API_URL
+  : import.meta.env.VITE_API_URL_LOCAL || import.meta.env.VITE_API_URL;
+
+const API_URL = (ENV_API_URL || DEFAULT_API_URL).replace(/\/$/, "");
 
 // Axios Instance
 const api = axios.create({

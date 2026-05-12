@@ -44,11 +44,15 @@ MAPBOX_TOKEN=your_mapbox_access_token
 
 Optional frontend override:
 
-Create `frontend/.env.local` only if your backend is not running on `http://localhost:3000`.
+Create `frontend/.env.local` for local overrides, or set the same variable in Vercel project settings.
 
 ```env
-VITE_API_URL=http://localhost:3000
+VITE_API_URL_LOCAL=http://localhost:3000
+VITE_API_URL=https://yelpcamp-llkg.onrender.com
 ```
+
+For local development, `VITE_API_URL_LOCAL` is used when present. If it is omitted, the frontend defaults to `http://localhost:3000`.
+For production builds, the frontend defaults to `https://yelpcamp-llkg.onrender.com`.
 
 ## Installation
 
@@ -85,6 +89,23 @@ npm run dev
 ```
 
 The frontend runs on `http://localhost:5173`.
+
+## Deployment
+
+Backend on Render:
+
+- Set the root directory to `backend` if deploying from this monorepo.
+- Build command: `npm install`
+- Start command: `npm start`
+- Required environment variables: `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_KEY`, `CLOUDINARY_SECRET`, `DB_URL`, `JWT_SECRET`, `MAPBOX_TOKEN`
+
+Frontend on Vercel:
+
+- Set the root directory to `frontend`.
+- Build command: `npm run build`
+- Output directory: `dist`
+- Environment variable: `VITE_API_URL=https://yelpcamp-llkg.onrender.com`
+- `frontend/vercel.json` rewrites all routes to `index.html` so React Router routes work on refresh.
 
 ## Useful Scripts
 
