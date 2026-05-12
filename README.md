@@ -1,71 +1,135 @@
-YelpCamp 🏕️
-============
+# YelpCamp
 
-YelpCamp is a web application built with Node.js, Express, and MongoDB that allows users to browse, create, and manage campgrounds. It includes features such as user authentication, campground creation, image uploading via Cloudinary, and data sanitization for enhanced security. 🌐
+YelpCamp is a MERN campground review application. Users can register, log in, browse campgrounds, view Mapbox locations, upload campground images through Cloudinary, and leave reviews.
 
-Features ✨
-----------
+## Tech Stack
 
-*   **User Authentication 🔐:** Users can register, log in, and log out using Passport.js with local authentication.
-*   **Campground Management 🏞️:** Users can create, view, and delete campgrounds. Each campground has an image, description, and location.
-*   **Image Uploads 🖼️:** Campground images are stored on Cloudinary for fast and secure access.
-*   **Data Sanitization 🛡️:** Input is sanitized using express-mongo-sanitize and sanitize-html to prevent injection attacks.
-*   **Responsive Design 📱:** The app is built with Bootstrap, ensuring a clean and responsive layout for various devices.
+- Frontend: React, Vite, React Router, Axios, Bootstrap, Mapbox GL JS
+- Backend: Node.js, Express, MongoDB, Mongoose
+- Authentication: Passport, passport-local-mongoose, express-session
+- Uploads: Multer, Cloudinary
+- Security: Helmet, express-mongo-sanitize, Joi validation
 
-Technologies Used ⚙️
---------------------
+## Project Structure
 
-*   **Node.js 🌱** - JavaScript runtime for building server-side applications.
-*   **Express.js ⚡** - Web framework for building the backend server.
-*   **MongoDB 🗄️** - NoSQL database for storing user and campground data.
-*   **Passport.js 🛂** - Authentication middleware for handling user login and registration.
-*   **Cloudinary ☁️** - Image upload and management service.
-*   **EJS 🖥️** - Templating engine to render HTML views.
-*   **Bootstrap 🖋️** - CSS framework for responsive design.
-*   **Helmet.js 🛡️** - Security middleware to set HTTP headers for improved security.
-*   **Mongoose 🐾** - MongoDB object modeling tool for handling data operations.
+```text
+yelpCamp/
+  backend/      Express API, MongoDB models, auth, uploads, Mapbox token endpoint
+  frontend/     React/Vite client
+  README.md     Project setup and usage guide
+```
 
-Installation 🔧
----------------
+## Prerequisites
 
-1.  Clone the repository:
-    
-        git clone https://github.com/fatima-Sami55/YelpCamp.git
-    
-2.  Install dependencies:
-    
-        cd YelpCamp && npm install
-    
-3.  Set up your environment variables by creating a `.env` file and adding the following:
-    
-        
-        CLOUDINARY_CLOUD_NAME=your-cloud-name
-        CLOUDINARY_API_KEY=your-api-key
-        CLOUDINARY_API_SECRET=your-api-secret
-        MONGO_URI=your-mongo-db-uri
-        SECRET=your-session-secret
-                        
-    
-4.  Start the app:
-    
-        npm start
-    
-5.  Visit the app at [http://localhost:3000](http://localhost:3000).
+- Node.js 18 or newer
+- npm
+- MongoDB connection string, local or Atlas
+- Cloudinary account
+- Mapbox access token
 
-Usage 📝
---------
+## Environment Variables
 
-*   **Home Page 🏡:** Displays a list of campgrounds with their images and brief descriptions.
-*   **Create Campground 🖋️:** Users can create a new campground with a name, description, and image upload.
-*   **View Campground 🔍:** Each campground can be clicked to view detailed information, including the full description and image.
+Create `backend/.env`:
 
-Contributing 🤝
----------------
+```env
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_KEY=your_cloudinary_api_key
+CLOUDINARY_SECRET=your_cloudinary_api_secret
+DB_URL=mongodb://localhost:27017/yelpdb
+SECRET=your_session_secret
+MAPBOX_TOKEN=your_mapbox_access_token
+```
 
-To contribute to the project:
+Optional frontend override:
 
-1.  Fork the repository.
-2.  Create a new branch (`git checkout -b feature-name`).
-3.  Make your changes and commit (`git commit -am 'Add new feature'`).
-4.  Push to the branch (`git push origin feature-name`).
-5.  Open a pull request.
+Create `frontend/.env.local` only if your backend is not running on `http://localhost:3000`.
+
+```env
+VITE_API_URL=http://localhost:3000
+```
+
+## Installation
+
+Install backend dependencies:
+
+```bash
+cd backend
+npm install
+```
+
+Install frontend dependencies:
+
+```bash
+cd frontend
+npm install
+```
+
+## Running Locally
+
+Start the backend:
+
+```bash
+cd backend
+npm start
+```
+
+The backend runs on `http://localhost:3000`.
+
+Start the frontend in a second terminal:
+
+```bash
+cd frontend
+npm run dev
+```
+
+The frontend runs on `http://localhost:5173`.
+
+## Useful Scripts
+
+Backend:
+
+```bash
+npm start
+npm run dev
+```
+
+Frontend:
+
+```bash
+npm run dev
+npm run build
+npm run preview
+npm run lint
+```
+
+## Key Routes
+
+Frontend:
+
+- `/` - home page
+- `/campgrounds` - campground index with cluster map
+- `/campgrounds/:id` - campground details with location map and reviews
+- `/login` - login
+- `/register` - register
+
+Backend:
+
+- `GET /currentUser`
+- `POST /register`
+- `POST /login`
+- `GET /logout`
+- `GET /mapbox-token`
+- `GET /campGround`
+- `GET /campGround/:id`
+- `POST /campGround`
+- `PUT /campGround/:id`
+- `DELETE /campGround/:id`
+- `POST /campGround/:id/reviews`
+- `DELETE /campGround/:id/reviews/:reviewId`
+
+## Notes
+
+- The frontend uses cookies for session auth, so the backend CORS configuration allows credentials from `http://localhost:5173`.
+- Mapbox is loaded in the frontend, but the token is served from the backend through `/mapbox-token`.
+- Image uploads require valid Cloudinary credentials.
+- Keep `.env`, `node_modules`, and build outputs out of git.

@@ -1,0 +1,18 @@
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  background-color: #f8f9fa;
+}
+
+a {
+  text-decoration: none;
+}
+
+.loading {
+  padding: 3rem;
+  text-align: center;
+}
